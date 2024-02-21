@@ -1,0 +1,22 @@
+package finalexam;
+import java.util.Scanner;
+public class numberlist {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner input=new Scanner(System.in);
+		System.out.print("Enter n:");
+		int n=input.nextInt();
+		int[]number=new int [n];
+		System.out.print("Enter number of list:");
+		for (int i = 0; i < n; i++) {
+            number[i] = input.nextInt();
+        }
+        
+        System.out.print("Output numbers:");
+        for (int numbers : number) {
+            System.out.println(numbers);
+
+	}
+	}
+}
