@@ -1,0 +1,111 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class CalculatorApp extends JFrame {
+    private JTextField textField;
+    private JButton[] numberButtons;
+    private JButton[] functionButtons;
+    private JButton addButton, subButton, mulButton, divButton, clearButton, equalsButton;
+    private JPanel panel;
+
+    private double num1, num2, result;
+    private char operator;
+
+    public CalculatorApp() {
+        this.setTitle("Calculator");
+        this.setSize(400, 600);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setResizable(false);
+
+        panel = new JPanel();
+        panel.setLayout(new GridLayout(4, 4));
+
+        textField = new JTextField();
+        textField.setPreferredSize(new Dimension(400, 100));
+        textField.setFont(new Font("Arial", Font.PLAIN, 30));
+        textField.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        numberButtons = new JButton[10];
+        for (int i = 0; i < 10; i++) {
+            numberButtons[i] = new JButton(String.valueOf(i));
+            numberButtons[i].setFont(new Font("Arial", Font.PLAIN, 20));
+            numberButtons[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    textField.setText(textField.getText() + ((JButton) e.getSource()).getText());
+                }
+            });
+        }
+
+        functionButtons = new JButton[6];
+        addButton = new JButton("+");
+        subButton = new JButton("-");
+        mulButton = new JButton("*");
+        divButton = new JButton("/");
+        clearButton = new JButton("C");
+        equalsButton = new JButton("=");
+
+        functionButtons[0] = addButton;
+        functionButtons[1] = subButton;
+        functionButtons[2] = mulButton;
+        functionButtons[3] = divButton;
+        functionButtons[4] = clearButton;
+        functionButtons[5] = equalsButton;
+
+        for (int i = 0; i < 6; i++) {
+            functionButtons[i].setFont(new Font("Arial", Font.PLAIN, 20));
+            functionButtons[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (e.getSource() == clearButton) {
+                        num1 = num2 = result = 0;
+                        operator = '\u0000';
+                        textField.setText("");
+                    } else if (e.getSource() == equalsButton) {
+                        num2 = Double.parseDouble(textField.getText());
+                        switch (operator) {
+                            case '+':
+                                result = num1 + num2;
+                                break;
+                            case '-':
+                                result = num1 - num2;
+                                break;
+                            case '*':
+                                result = num1 * num2;
+                                break;
+                            case '/':
+                                result = num1 / num2;
+                                break;
+                        }
+                        textField.setText(String.valueOf(result));
+                    } else {
+                        num1 = Double.parseDouble(textField.getText());
+                        operator = ((JButton) e.getSource()).getText().charAt(0);
+                        textField.setText("");
+                    }
+                }
+            });
+        }
+
+        panel.add(textField);
+        
+        for (int i = 1; i <= 9; i++) {
+            panel.add(numberButtons[i]);
+            if (i % 3 == 0)
+                panel.add(functionButtons[i/3]);
+        }
+
+        panel.add(numberButtons[0]);
+        panel.add(functionButtons[4]);
+        panel.add(functionButtons[5]);
+
+        this.add(panel);
+    }
+
+    public static void main(String[] args) {
+        CalculatorApp calculatorApp = new CalculatorApp();
+        calculatorApp.setVisible(true);
+    }
+}
