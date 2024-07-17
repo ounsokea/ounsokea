@@ -1,0 +1,69 @@
+@Entity
+@Table(name = "customers")
+public class Customer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    private String email;
+    private String phone;
+    
+    // getters and setters
+}
+
+@Repository
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
+}
+
+@Service
+public class CustomerService {
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    public Customer addCustomer(Customer customer) {
+        return customerRepository.save(customer);
+    }
+
+    public Customer findCustomerById(Long id) {
+        return customerRepository.findById(id).orElse(null);
+    }
+
+    public List<Customer> getAllCustomers() {
+        return customerRepository.findAll();
+    }
+
+    public Customer updateCustomer(Long id, Customer customer) {
+        if (customerRepository.existsById(id)) {
+            customer.setId(id);
+            return customerRepository.save(customer);
+        }
+        return null;
+    }
+}
+
+@RestController
+@RequestMapping("/customers")
+public class CustomerController {
+    @Autowired
+    private CustomerService customerService;
+
+    @PostMapping
+    public Customer addCustomer(@RequestBody Customer customer) {
+        return customerService.addCustomer(customer);
+    }
+
+    @GetMapping("/{id}")
+    public Customer findCustomerById(@PathVariable Long id) {
+        return customerService.findCustomerById(id);
+    }
+
+    @GetMapping
+    public List<Customer> getAllCustomers() {
+        return customerService.getAllCustomers();
+    }
+
+    @PutMapping("/{id}")
+    public Customer updateCustomer(@PathVariable Long id, @RequestBody Customer customer) {
+        return customerService.updateCustomer(id, customer);
+    }
+}
