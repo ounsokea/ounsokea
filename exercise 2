@@ -1,0 +1,52 @@
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+public class CustomerInfoApp extends JFrame {
+    private JTable table;
+
+    public CustomerInfoApp() {
+        this.setTitle("Customer Information");
+        this.setSize(600, 400);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("ID");
+        model.addColumn("Name");
+        model.addColumn("Email");
+        model.addColumn("Phone");
+
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/your_database", "username", "password");
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Customer");
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+
+                model.addRow(new Object[]{id, name, email, phone});
+            }
+
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        table = new JTable(model);
+        JScrollPane scrollPane = new JScrollPane(table);
+        this.add(scrollPane);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            CustomerInfoApp app = new CustomerInfoApp();
+            app.setVisible(true);
+        });
+    }
+}
